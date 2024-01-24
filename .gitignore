@@ -1,7 +1,9 @@
 # Python
 *.pyc
 __pycache__
+*.egg-info
 .venv
+dist
 
 # MacOS
 .DS_Store
