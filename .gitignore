@@ -9,4 +9,5 @@ dist
 .DS_Store
 
 # django-coalesce
+*.g.py
 *.g.ts

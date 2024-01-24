@@ -2,8 +2,7 @@
 import dataclasses
 import inspect
 import types
-from pprint import pprint
-from typing import Type
+from typing import Protocol, Type
 
 from django.conf import settings
 from django.db.models import Model
@@ -13,6 +12,10 @@ from django.template import loader
 @dataclasses.dataclass
 class ModelInfo:
     model_class: Type[Model]
+
+    @property
+    def meta(self):
+        return self.model_class._meta
 
     @property
     def model_name(self) -> str:
@@ -38,7 +41,12 @@ class Finder:
         return inspect.isclass(m) and issubclass(m, Model)
 
 
-class Generator:
+class BaseGenerator(Protocol):
+    def generate(self, model_info: ModelInfo) -> str:
+        ...
+
+
+class TypescriptModelGenerator(BaseGenerator):
     def generate(self, model_info: ModelInfo):
         content = loader.render_to_string(
             "django_coalesce/model.ts",
@@ -47,11 +55,24 @@ class Generator:
         return content
 
 
+class DjangoNinjaCrudGenerator(BaseGenerator):
+    def generate(self, model_info: ModelInfo):
+        content = loader.render_to_string(
+            "django_coalesce/api.py",
+            {"model": model_info},
+        )
+        return content
+
+
 def main(module: types.ModuleType):
     model_infos = Finder().find(module)
-    pprint(model_infos)
     for model_info in model_infos:
-        content = Generator().generate(model_info)
+        content = TypescriptModelGenerator().generate(model_info)
         filename = f"{model_info.model_name.casefold()}.g.ts"
+        with open(settings.BASE_DIR.parent / "generated" / filename, "w") as fout:
+            fout.write(content)
+
+        content = DjangoNinjaCrudGenerator().generate(model_info)
+        filename = f"{model_info.model_name.casefold()}_api.g.py"
         with open(settings.BASE_DIR.parent / "generated" / filename, "w") as fout:
             fout.write(content)
