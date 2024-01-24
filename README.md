@@ -6,6 +6,10 @@ Inspired by the awesome .NET [Coalesce](https://intellitect.github.io/Coalesce/)
 
 ## Features
 
+### Generate [Django Ninja](https://django-ninja.dev/) API CRUD views — WIP
+
+...
+
 ### Generate TypeScript models from Django models — WIP
 
 Given the following Django model:
