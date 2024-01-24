@@ -1,0 +1,10 @@
+# Python
+*.pyc
+__pycache__
+.venv
+
+# MacOS
+.DS_Store
+
+# django-coalesce
+*.g.ts
