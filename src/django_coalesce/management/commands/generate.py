@@ -23,9 +23,8 @@ class Command(BaseCommand):
             ):
                 if isinstance(models_module, str):
                     models_module = importlib.import_module(models_module)
-                main.main(models_module)
 
-        # raise CommandError('Poll "%s" does not exist' % poll_id)
-        # self.stdout.write(
-        #     self.style.SUCCESS('Successfully closed poll "%s"' % poll_id)
-        # )
+                for generated_module in main.main(models_module):
+                    self.stdout.write(
+                        self.style.SUCCESS("Generated %s" % generated_module)
+                    )

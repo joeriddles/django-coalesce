@@ -4,9 +4,8 @@ import inspect
 import os
 import pathlib
 import types
-from typing import Protocol, Type
+from typing import Generator, Protocol, Type
 
-from django.conf import settings
 from django.db.models import Model
 from django.template import loader
 
@@ -36,11 +35,13 @@ class Finder:
     def find(self, module: types.ModuleType) -> list[ModelInfo]:
         return [
             ModelInfo(type_)
-            for _, type_ in inspect.getmembers(module, self._filter_django_models)
+            for _, type_ in inspect.getmembers(
+                module, self._filter_concrete_django_models
+            )
         ]
 
-    def _filter_django_models(self, m) -> bool:
-        return inspect.isclass(m) and issubclass(m, Model)
+    def _filter_concrete_django_models(self, m) -> bool:
+        return inspect.isclass(m) and issubclass(m, Model) and not m._meta.abstract
 
 
 class BaseGenerator(Protocol):
@@ -65,8 +66,15 @@ class DjangoNinjaCrudGenerator(BaseGenerator):
         return content
 
 
-def main(module: types.ModuleType):
+def write(filepath: str | pathlib.Path, content: str) -> None:
+    with open(filepath, "w") as fout:
+        fout.write(content)
+
+
+def main(module: types.ModuleType) -> Generator[str, None, None]:
     model_infos = Finder().find(module)
+    parent_module_name = module.__name__.rsplit(".", maxsplit=1)[0]
+
     for model_info in model_infos:
         module_folder_path: str = pathlib.Path(module.__file__).parent  # type: ignore
         generated_folder_path = pathlib.Path(module_folder_path, "generated")
@@ -78,13 +86,15 @@ def main(module: types.ModuleType):
 
         content = TypescriptModelGenerator().generate(model_info)
         filename = f"{model_info.model_name.casefold()}.g.ts"
-        with open(generated_folder_path / filename, "w") as fout:
-            fout.write(content)
+        write(generated_folder_path / filename, content)
+        yield f"{parent_module_name}.generated.{filename}"
 
         content = DjangoNinjaCrudGenerator().generate(model_info)
         filename = f"{model_info.model_name.casefold()}_api.g.py"
-        with open(generated_folder_path / filename, "w") as fout:
-            fout.write(content)
+        write(generated_folder_path / filename, content)
+        yield f"{parent_module_name}.generated.{filename}"
 
-        with open(generated_folder_path / "__init__.py", "w") as fout:
-            fout.write("")
+        content = ""
+        filename = "__init__.py"
+        write(generated_folder_path / filename, content)
+        yield f"{parent_module_name}.generated.{filename}"
