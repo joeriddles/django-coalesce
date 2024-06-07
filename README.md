@@ -2,6 +2,8 @@
 
 [![PyPI version](https://badge.fury.io/py/django-coalesce.svg)](https://badge.fury.io/py/django-coalesce)
 
+What makes the world's most powerful batteries-included web framework even better? Automatically generating more batteries! 🔋
+
 Inspired by the awesome .NET [Coalesce](https://intellitect.github.io/Coalesce/) project for accelerated web app development.
 
 ## Features
