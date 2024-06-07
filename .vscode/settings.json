@@ -1,6 +1,7 @@
 {
     // Python
     "python.analysis.typeCheckingMode": "standard",
+    "ruff.configuration": "${workspaceFolder}/pyproject.toml",
     "[python]": {
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.formatOnSave": true,

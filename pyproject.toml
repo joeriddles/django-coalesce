@@ -21,3 +21,9 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/joeriddles/django-coalesce"
 "Bug Tracker" = "https://github.com/joeriddles/django-coalesce/issues"
+
+[tool.ruff]
+extend-exclude = ["src/django_coalesce/templates"]
+
+[tool.pyright]
+ignore = ["src/django_coalesce/templates"]
