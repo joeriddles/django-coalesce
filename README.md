@@ -72,7 +72,7 @@ def delete_user(request, user_id: int):
     return {"success": True}
 ```
 
-<details>
+</details>
 
 ### Generate TypeScript models from Django models — WIP
 
