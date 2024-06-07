@@ -3,7 +3,9 @@
 __pycache__
 *.egg-info
 .venv
-dist
+/dist
+/build
+*.sqlite3
 
 # MacOS
 .DS_Store
@@ -11,3 +13,5 @@ dist
 # django-coalesce
 *.g.py
 *.g.ts
+!example/**/*.g.py
+!example/**/*.g.ts

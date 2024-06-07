@@ -1,6 +1,8 @@
 # import ast
 import dataclasses
 import inspect
+import os
+import pathlib
 import types
 from typing import Protocol, Type
 
@@ -42,8 +44,7 @@ class Finder:
 
 
 class BaseGenerator(Protocol):
-    def generate(self, model_info: ModelInfo) -> str:
-        ...
+    def generate(self, model_info: ModelInfo) -> str: ...
 
 
 class TypescriptModelGenerator(BaseGenerator):
@@ -67,12 +68,23 @@ class DjangoNinjaCrudGenerator(BaseGenerator):
 def main(module: types.ModuleType):
     model_infos = Finder().find(module)
     for model_info in model_infos:
+        module_folder_path: str = pathlib.Path(module.__file__).parent  # type: ignore
+        generated_folder_path = pathlib.Path(module_folder_path, "generated")
+
+        try:
+            os.mkdir(generated_folder_path)
+        except FileExistsError:
+            pass
+
         content = TypescriptModelGenerator().generate(model_info)
         filename = f"{model_info.model_name.casefold()}.g.ts"
-        with open(settings.BASE_DIR.parent / "generated" / filename, "w") as fout:
+        with open(generated_folder_path / filename, "w") as fout:
             fout.write(content)
 
         content = DjangoNinjaCrudGenerator().generate(model_info)
         filename = f"{model_info.model_name.casefold()}_api.g.py"
-        with open(settings.BASE_DIR.parent / "generated" / filename, "w") as fout:
+        with open(generated_folder_path / filename, "w") as fout:
             fout.write(content)
+
+        with open(generated_folder_path / "__init__.py", "w") as fout:
+            fout.write("")

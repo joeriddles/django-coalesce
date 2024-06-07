@@ -1,0 +1,2 @@
+django-coalesce==0.0.1
+Django==5.0.6

@@ -5,17 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "run",
-            "type": "python",
+            "name": "Example: generate",
+            "type": "debugpy",
             "request": "launch",
-            "module": "django_coalesce.main",
-            "justMyCode": true,
+            "module": "manage",
+            "args": ["generate"],
             "console": "internalConsole",
-            "cwd": "${workspaceFolder}/src",
+            "cwd": "${workspaceFolder}/example/src/example",
+            "django": true,
+            "justMyCode": true,
             "env": {
-                "DJANGO_SETTINGS_MODULE": "django_coalesce.settings",
-            },
-            "django": true
+                "PYTHONPATH": "${workspaceFolder}/example/src"
+            }
         }
     ]
 }
