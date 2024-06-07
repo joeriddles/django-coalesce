@@ -20,6 +20,7 @@ class User(models.Model):
 <summary>Generates the following Django Ninja module:</summary>
 
 ```python
+# user_api.g.py
 from django.shortcuts import get_object_or_404
 from ninja import Router, Schema
 
