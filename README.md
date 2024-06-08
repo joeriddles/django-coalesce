@@ -103,10 +103,25 @@ export interface user {
 ```shell
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt -r dev.txt
+pip install -r requirements.txt
+pip install -e '.[dev]'
 
 # not required but makes setting PYTHONPATH and DJANGO_SETTINGS_MODULE easier
 direnv allow
+```
+
+### Testing
+
+Run all tests
+```shell
+cd ./src/django_coalesce
+pytest .
+```
+
+Run tests with coverage
+```shell
+cd ./src/django_coalesce
+pytest --cov=django_coalesce .
 ```
 
 ### Build
