@@ -19,14 +19,14 @@ class CodeBuilder:
     def __init__(
         self,
         initial_level: int = 0,
-        indent_size: int = 0,
+        indent_size: int = 4,
         indent_char: str = " ",
     ):
         self._level = initial_level
         self._indent_size = indent_size
         self._indent_char = indent_char
         self._on_new_line: bool = False
-        self._sb = ""  # TODO: make StringBuilder class
+        self._sb = ""  # TODO: port StringBuilder class from .NET ?
 
     def __str__(self) -> str:
         return self._sb
@@ -40,7 +40,7 @@ class CodeBuilder:
     def line(self, line: str) -> Self:
         """
         Write a line of text at the current indentation level.
-        If `Append(string)` was called previously, no indentation will be added.
+        If `append(string)` was called previously, no indentation will be added.
         """
 
     def line(self, line: str = "") -> Self:
@@ -51,7 +51,7 @@ class CodeBuilder:
         return self
 
     def lines(self, lines: Iterable[str]) -> Self:
-        """Calls `Line(string)` for each line."""
+        """Calls `line(string)` for each line."""
         for line in lines:
             self.line(line)
         return self
@@ -95,7 +95,7 @@ class CodeBuilder:
             return self
         else:
             self._level += 1
-            return Indentation(self)
+            return self.Indentation(self)
 
     def append(self, text: str) -> Self:
         """
@@ -119,15 +119,15 @@ class CodeBuilder:
         self._sb = self._sb.rstrip()
         return self
 
-
-@contextlib.contextmanager
-def Indentation(
-    parent: CodeBuilder,
-    close_with: str | None = None,
-) -> Generator[None, None, None]:
-    try:
-        yield
-    finally:
-        parent._level -= 1
-        if close_with is not None:
-            parent.line(close_with)
+    @staticmethod
+    @contextlib.contextmanager
+    def Indentation(
+        parent: CodeBuilder,
+        close_with: str | None = None,
+    ) -> Generator[None, None, None]:
+        try:
+            yield
+        finally:
+            parent._level -= 1
+            if close_with is not None:
+                parent.line(close_with)
