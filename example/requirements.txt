@@ -1,2 +1,2 @@
-django-coalesce==0.0.1
+django-coalesce==0.0.3
 Django==5.0.6
