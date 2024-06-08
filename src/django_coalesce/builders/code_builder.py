@@ -95,7 +95,7 @@ class CodeBuilder:
             return self
         else:
             self._level += 1
-            return self.Indentation(self)
+            return Indentation(self)
 
     def append(self, text: str) -> Self:
         """
@@ -119,15 +119,15 @@ class CodeBuilder:
         self._sb = self._sb.rstrip()
         return self
 
-    @staticmethod
-    @contextlib.contextmanager
-    def Indentation(
-        parent: CodeBuilder,
-        close_with: str | None = None,
-    ) -> Generator[None, None, None]:
-        try:
-            yield
-        finally:
-            parent._level -= 1
-            if close_with is not None:
-                parent.line(close_with)
+
+@contextlib.contextmanager
+def Indentation(
+    parent: CodeBuilder,
+    close_with: str | None = None,
+) -> Generator[None, None, None]:
+    try:
+        yield
+    finally:
+        parent._level -= 1
+        if close_with is not None:
+            parent.line(close_with)
