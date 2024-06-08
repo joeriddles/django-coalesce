@@ -1,12 +1,14 @@
 {
+    // General
+    "editor.rulers": [80, 120],
     // Python
     "python.analysis.typeCheckingMode": "standard",
     "ruff.configuration": "${workspaceFolder}/pyproject.toml",
+    "ruff.organizeImports": true,
     "[python]": {
         "editor.defaultFormatter": "charliermarsh.ruff",
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
-            "source.fixAll": "never",
             "source.organizeImports": "explicit"
         },
     },
